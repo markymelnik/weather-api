@@ -26,11 +26,11 @@ function displayWeather(element) {
       const weatherResponse = await fetch('https://api.openweathermap.org/data/2.5/weather?lat='+coorData[0].lat+'&lon='+coorData[0].lon+'&appid=a514c3b8912742c6fbbe4b4f27cb598c');
       const weatherData = await weatherResponse.json();
       
-      location.textContent = `Current weather conditions in ${(searchValue)}`;
+      location.textContent = `Current weather conditions in ${(capitalizeFirstLetters(searchValue))}`;
       temperature.textContent = `Temperature: ${tempConverter.toCelsius(weatherData.main.temp)}°C`;
       feelsLike.textContent = `Feels Like: ${tempConverter.toCelsius(weatherData.main.feels_like)}°C`;
-      condition.textContent = `Conditions: ${(weatherData.weather[0].description)}`;
-      wind.textContent = `Wind Speed: ${weatherData.wind.speed} m/s`;
+      condition.textContent = `Conditions: ${(capitalizeFirstLetters(weatherData.weather[0].description))}`;
+      wind.textContent = `Wind: ${weatherData.wind.speed.toFixed(0)} m/s`;
 
       search.value = '';
       
@@ -56,3 +56,11 @@ const tempConverter = (() => {
   }
 
 })();
+
+function capitalizeFirstLetters(str) {
+  str = str.split(' ');
+  for (let i = 0; i < str.length; i++) {
+    str[i] = str[i][0].toUpperCase() + str[i].substr(1).toLowerCase();
+  }
+  return str.join(' ');
+};
