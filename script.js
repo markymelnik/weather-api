@@ -1,10 +1,6 @@
 
-const form = document.querySelector('form');
+const displayController = (() => {
 
-form.addEventListener('submit', displayWeather);
-
-function displayWeather(element) {
-  
   const search = document.querySelector('#search');
   const temperature = document.querySelector('.temp');
   const feelsLike = document.querySelector('.feelslike');
@@ -12,33 +8,47 @@ function displayWeather(element) {
   const wind = document.querySelector('.wind');
   const location = document.querySelector('.location');
 
+  const displayWeather = (element) => {
   
-  let searchValue = search.value;
-
-  element.preventDefault();
-
-  getWeatherData();
-
-  async function getWeatherData() {
-    try {
-      const coorResponse = await fetch('http://api.openweathermap.org/geo/1.0/direct?q='+searchValue+'&appid=a514c3b8912742c6fbbe4b4f27cb598c');
-      const coorData = await coorResponse.json();
-      const weatherResponse = await fetch('https://api.openweathermap.org/data/2.5/weather?lat='+coorData[0].lat+'&lon='+coorData[0].lon+'&appid=a514c3b8912742c6fbbe4b4f27cb598c');
-      const weatherData = await weatherResponse.json();
-      
-      location.textContent = `Current weather conditions in ${(capitalizeFirstLetters(searchValue))}`;
-      temperature.textContent = `Temperature: ${tempConverter.toCelsius(weatherData.main.temp)}°C`;
-      feelsLike.textContent = `Feels Like: ${tempConverter.toCelsius(weatherData.main.feels_like)}°C`;
-      condition.textContent = `Conditions: ${(capitalizeFirstLetters(weatherData.weather[0].description))}`;
-      wind.textContent = `Wind: ${weatherData.wind.speed.toFixed(0)} m/s`;
-
-      search.value = '';
-      
-    } catch (err) {
-      console.log(err);
+    let searchValue = search.value;
+    element.preventDefault();
+    getWeatherData();
+  
+    async function getWeatherData() {
+      try {
+        const coorResponse = await fetch('http://api.openweathermap.org/geo/1.0/direct?q='+searchValue+'&appid=a514c3b8912742c6fbbe4b4f27cb598c');
+        const coorData = await coorResponse.json();
+        const weatherResponse = await fetch('https://api.openweathermap.org/data/2.5/weather?lat='+coorData[0].lat+'&lon='+coorData[0].lon+'&appid=a514c3b8912742c6fbbe4b4f27cb598c');
+        const weatherData = await weatherResponse.json();
+        
+        location.textContent = `Current weather conditions in ${(capitalizeFirstLetters(searchValue))}`;
+        temperature.textContent = `Temperature: ${tempConverter.toCelsius(weatherData.main.temp)}°C`;
+        feelsLike.textContent = `Feels Like: ${tempConverter.toCelsius(weatherData.main.feels_like)}°C`;
+        condition.textContent = `Conditions: ${(capitalizeFirstLetters(weatherData.weather[0].description))}`;
+        wind.textContent = `Wind: ${weatherData.wind.speed.toFixed(0)} m/s`;
+  
+        search.value = '';
+        
+      } catch (err) {
+        console.log(err);
+      }
     }
+  };
+
+  const capitalizeFirstLetters = (str) => {
+    str = str.split(' ');
+    for (let i = 0; i < str.length; i++) {
+      str[i] = str[i][0].toUpperCase() + str[i].substr(1).toLowerCase();
+    }
+    return str.join(' ');
+  };
+
+  return {
+    displayWeather
   }
-};
+
+})();
+
 
 const tempConverter = (() => {
 
@@ -57,10 +67,5 @@ const tempConverter = (() => {
 
 })();
 
-function capitalizeFirstLetters(str) {
-  str = str.split(' ');
-  for (let i = 0; i < str.length; i++) {
-    str[i] = str[i][0].toUpperCase() + str[i].substr(1).toLowerCase();
-  }
-  return str.join(' ');
-};
+const form = document.querySelector('form');
+form.addEventListener('submit', displayController.displayWeather);
