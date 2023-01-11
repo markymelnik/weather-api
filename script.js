@@ -26,7 +26,7 @@ const displayController = (() => {
         const celsiusTemp = tempConverter.toCelsius(weatherData.main.temp);
         
         location.textContent = `Current weather conditions in ${(capitalizeFirstLetters(searchValue))}`;
-        temperature.textContent = `Temperature: ${celsiusTemp}`;
+        temperature.textContent = `Temperature: ${celsiusTemp}°C`;
         feelsLike.textContent = `Feels Like: ${tempConverter.toCelsius(weatherData.main.feels_like)}°C`;
         condition.textContent = `Conditions: ${(capitalizeFirstLetters(weatherData.weather[0].description))}`;
         wind.textContent = `Wind: ${weatherData.wind.speed.toFixed(0)} m/s`;
